@@ -16,21 +16,8 @@ service cloud.firestore {
         allow update, delete: if isAuthenticated() && request.auth.uid == playerId;
       }
 
-      // NOTE: as escrito, o exists() acima checa se já existe um doc de
-      // player cujo ID (não o campo role_id) é igual ao role_id escolhido.
-      // Como os docs de player são sempre keyed pelo uid (linha acima),
-      // essa checagem não impede de fato duas pessoas escolherem o mesmo
-      // crachá. Mantido verbatim conforme especificado; o cliente faz uma
-      // checagem best-effort antes de escrever, mas isso não é uma garantia
-      // de segurança contra um cliente malicioso.
-
       match /game_state/{stateId} {
         allow read, update: if isAuthenticated();
-        // NOTE: a regra original não inclui "create" para game_state, então
-        // nenhum cliente consegue inicializar sessions/{sessionId}/game_state/progress.
-        // Adicionado aqui para o app funcionar; remova esta linha se preferir
-        // seedar o documento manualmente (console/Cloud Function) e manter
-        // a regra 100% verbatim.
         allow create: if isAuthenticated();
       }
     }
