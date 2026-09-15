@@ -1,4 +1,4 @@
-import type { RoleDef } from "../../types";
+import type { RoleDef, RoleId } from "../../types";
 
 // Conteúdo do mistério. Trocar este arquivo (ou criar um novo cenario-*.ts)
 // é suficiente para reskinar o jogo sem tocar nos componentes de role.
@@ -15,38 +15,74 @@ export const ROLES: RoleDef[] = [
     id: "analista-audio",
     label: "Analista de Áudio",
     icon: "🎧",
-    color: "magenta",
+    color: "purple",
     tagline: "Escuta gravações interceptadas.",
   },
   {
     id: "criptografo",
     label: "Criptógrafo",
     icon: "🔐",
-    color: "lime",
+    color: "orange",
     tagline: "Traduz símbolos e códigos secretos.",
   },
   {
     id: "hacker-sistemas",
     label: "Hacker de Sistemas",
     icon: "💻",
-    color: "amber",
+    color: "green",
     tagline: "Invade terminais com senhas descobertas pela equipe.",
   },
   {
     id: "especialista-comportamento",
     label: "Especialista em Comportamento",
     icon: "🧠",
-    color: "magenta",
+    color: "red",
     tagline: "Estuda dossiês e álibis dos suspeitos.",
   },
   {
     id: "detetive-chefe",
     label: "Detetive Chefe",
     icon: "🕵️",
-    color: "cyan",
+    color: "yellow",
     tagline: "Comanda o mapa e registra a acusação final.",
   },
 ];
+
+// Como os 6 papéis-base se agrupam em crachás conforme o nº de jogadores
+// (2 a 6). Cada sub-array é um crachá; um jogador que escolhe um crachá
+// com mais de um papel acumula todos eles.
+export const BADGES_BY_PLAYER_COUNT: Record<number, RoleId[][]> = {
+  6: [
+    ["perito-imagens"],
+    ["analista-audio"],
+    ["criptografo"],
+    ["hacker-sistemas"],
+    ["especialista-comportamento"],
+    ["detetive-chefe"],
+  ],
+  5: [
+    ["detetive-chefe"],
+    ["especialista-comportamento"],
+    ["perito-imagens"],
+    ["analista-audio"],
+    ["criptografo", "hacker-sistemas"],
+  ],
+  4: [
+    ["detetive-chefe"],
+    ["perito-imagens"],
+    ["criptografo", "hacker-sistemas"],
+    ["especialista-comportamento", "analista-audio"],
+  ],
+  3: [
+    ["detetive-chefe", "especialista-comportamento"],
+    ["perito-imagens", "analista-audio"],
+    ["criptografo", "hacker-sistemas"],
+  ],
+  2: [
+    ["detetive-chefe", "perito-imagens", "analista-audio"],
+    ["criptografo", "hacker-sistemas", "especialista-comportamento"],
+  ],
+};
 
 export const SCENARIO_ID = "cenario-trofeu";
 

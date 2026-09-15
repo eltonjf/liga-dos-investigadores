@@ -24,8 +24,8 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Panel title="Mapa da Escola" accent="cyan">
-        <svg viewBox="0 0 320 180" className="w-full rounded-lg border border-ink-700 bg-ink-950">
+      <Panel title="Mapa da Escola" accent="yellow">
+        <svg viewBox="0 0 320 180" className="w-full rounded-xl border border-slate-700 bg-slate-950">
           <rect x="10" y="10" width="90" height="70" fill="#141a29" stroke="#22f2ff" />
           <text x="55" y="50" textAnchor="middle" fontSize="9" fill="#22f2ff" fontFamily="monospace">
             QUADRA
@@ -45,9 +45,9 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
         </svg>
       </Panel>
 
-      <Panel title="Formulário de Acusação Final" accent="lime">
+      <Panel title="Formulário de Acusação Final" accent="yellow">
         {accused ? (
-          <p className="text-center font-mono text-neon-lime">
+          <p className="text-center font-mono text-yellow-400">
             Acusação registrada: {SUSPECTS.find((s) => s.id === accused)?.name}
           </p>
         ) : (
@@ -56,8 +56,8 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
               {SUSPECTS.map((s) => (
                 <label
                   key={s.id}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 transition ${
-                    selected === s.id ? "border-neon-lime bg-neon-lime/10" : "border-ink-700"
+                  className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition ${
+                    selected === s.id ? "border-yellow-400 bg-yellow-400/10 shadow-neon-yellow" : "border-slate-700"
                   }`}
                 >
                   <input
@@ -65,7 +65,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
                     name="suspect"
                     checked={selected === s.id}
                     onChange={() => setSelected(s.id)}
-                    className="accent-lime-400"
+                    className="accent-yellow-400"
                   />
                   <span className="font-mono text-white">{s.name}</span>
                 </label>
@@ -74,7 +74,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
             <button
               onClick={handleAccuse}
               disabled={!selected || confirming}
-              className="mt-4 w-full rounded-lg border-2 border-neon-lime py-2 font-mono uppercase tracking-wide text-neon-lime hover:bg-neon-lime/10 disabled:opacity-40"
+              className="mt-4 w-full rounded-xl border-2 border-yellow-400 py-2 font-mono uppercase tracking-wide text-yellow-400 shadow-neon-yellow hover:bg-yellow-400/10 disabled:opacity-40"
             >
               Confirmar acusação
             </button>

@@ -12,7 +12,7 @@ service cloud.firestore {
 
       match /players/{playerId} {
         allow read: if true;
-        allow create: if isAuthenticated() && request.auth.uid == playerId && !exists(/databases/$(database)/documents/sessions/$(sessionId)/players/$(request.resource.data.role_id));
+        allow create: if isAuthenticated() && request.auth.uid == playerId;
         allow update, delete: if isAuthenticated() && request.auth.uid == playerId;
       }
 

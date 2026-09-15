@@ -32,12 +32,12 @@ export function HackerSistemas({ sessionId, gameState }: HackerSistemasProps) {
   }
 
   return (
-    <Panel title="Terminal de Acesso" accent="amber">
-      <div className="h-48 overflow-y-auto rounded-lg border border-ink-700 bg-black p-3 font-mono text-sm text-neon-lime">
+    <Panel title="Terminal de Acesso" accent="green">
+      <div className="h-48 overflow-y-auto rounded-xl border border-slate-700 bg-black p-3 font-mono text-sm text-green-400">
         {log.map((line, i) => (
           <div key={i}>{line}</div>
         ))}
-        {solved && <div className="mt-2 text-neon-cyan">Puzzle 1 desbloqueado para toda a equipe!</div>}
+        {solved && <div className="mt-2 text-cyan-400">Puzzle 1 desbloqueado para toda a equipe!</div>}
       </div>
 
       <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
@@ -46,12 +46,12 @@ export function HackerSistemas({ sessionId, gameState }: HackerSistemasProps) {
           onChange={(e) => setInput(e.target.value)}
           disabled={solved}
           placeholder="Digite a senha..."
-          className="w-full rounded-lg border-2 border-ink-700 bg-ink-950 px-3 py-2 font-mono uppercase text-white outline-none focus:border-neon-amber disabled:opacity-40"
+          className="w-full rounded-xl border-2 border-slate-700 bg-slate-950 px-3 py-2 font-mono uppercase text-white outline-none focus:border-green-400 focus:shadow-neon-green disabled:opacity-40"
         />
         <button
           type="submit"
           disabled={solved || submitting}
-          className="rounded-lg border-2 border-neon-amber px-4 font-mono text-neon-amber hover:bg-neon-amber/10 disabled:opacity-40"
+          className="rounded-xl border-2 border-green-400 px-4 font-mono text-green-400 shadow-neon-green hover:bg-green-400/10 disabled:opacity-40"
         >
           Enviar
         </button>

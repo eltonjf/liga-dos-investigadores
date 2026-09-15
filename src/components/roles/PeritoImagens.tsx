@@ -6,7 +6,7 @@ export function PeritoImagens() {
 
   return (
     <Panel title="Sala de Troféus — Foto da Cena" accent="cyan">
-      <div className="overflow-hidden rounded-lg border border-ink-700 bg-ink-950">
+      <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
         <div
           className="flex aspect-video items-center justify-center transition-transform duration-200"
           style={{ transform: `scale(${zoom})` }}
@@ -37,14 +37,14 @@ export function PeritoImagens() {
       <div className="mt-3 flex items-center justify-center gap-3">
         <button
           onClick={() => setZoom((z) => Math.max(1, z - 0.5))}
-          className="rounded border border-neon-cyan px-3 py-1 font-mono text-neon-cyan hover:bg-neon-cyan/10"
+          className="rounded-lg border border-cyan-400 px-3 py-1 font-mono text-cyan-400 shadow-neon-cyan hover:bg-cyan-400/10"
         >
           −
         </button>
         <span className="font-mono text-sm text-white/70">Zoom {zoom.toFixed(1)}x</span>
         <button
           onClick={() => setZoom((z) => Math.min(3, z + 0.5))}
-          className="rounded border border-neon-cyan px-3 py-1 font-mono text-neon-cyan hover:bg-neon-cyan/10"
+          className="rounded-lg border border-cyan-400 px-3 py-1 font-mono text-cyan-400 shadow-neon-cyan hover:bg-cyan-400/10"
         >
           +
         </button>
