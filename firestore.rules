@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() { return request.auth != null; }
+
+    match /scenarios/{scenarioId} { allow read: if true; allow write: if false; }
+
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.host_id == request.auth.uid;
+
+      match /players/{playerId} {
+        allow read: if true;
+        allow create: if isAuthenticated() && request.auth.uid == playerId && !exists(/databases/$(database)/documents/sessions/$(sessionId)/players/$(request.resource.data.role_id));
+        allow update, delete: if isAuthenticated() && request.auth.uid == playerId;
+      }
+
+      match /game_state/{stateId} {
+        allow read, update: if isAuthenticated();
+        allow create: if isAuthenticated();
+      }
+    }
+
+    match /secrets/{secretId} {
+      allow read: if isAuthenticated() && get(/databases/$(database)/documents/sessions/$(secretId)/game_state/progress).data.puzzle_1_solved == true;
+      allow write: if false;
+    }
+  }
+}

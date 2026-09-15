@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --font-display: "Segoe UI", system-ui, sans-serif;
+
+  --color-neon-cyan: #22f2ff;
+  --color-neon-magenta: #ff2ee6;
+  --color-neon-lime: #b6ff1f;
+  --color-neon-amber: #ffb020;
+  --color-ink-950: #05060a;
+  --color-ink-900: #0a0d16;
+  --color-ink-800: #10141f;
+  --color-ink-700: #1a2030;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink-950);
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(34, 242, 255, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(255, 46, 230, 0.08), transparent 40%);
+  color: #e6f6ff;
+  font-family: var(--font-display);
+  min-height: 100svh;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-glow {
+  text-shadow: 0 0 12px currentColor;
+}
+
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+}
