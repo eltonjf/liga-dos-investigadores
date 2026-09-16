@@ -133,11 +133,11 @@ function RoleView({
 }) {
   switch (roleId) {
     case "perito-imagens":
-      return <PeritoImagens />;
+      return <PeritoImagens gameState={gameState} />;
     case "analista-audio":
       return <AnalistaAudio />;
     case "criptografo":
-      return <Criptografo />;
+      return <Criptografo gameState={gameState} />;
     case "hacker-sistemas":
       return <HackerSistemas sessionId={sessionId} gameState={gameState} />;
     case "especialista-comportamento":

@@ -92,25 +92,29 @@ export const SCENARIO_FALLBACK = {
   timeLimit: 45,
 };
 
-// --- Conteúdo placeholder do Puzzle 1 -------------------------------------
-// Substitua pelos textos reais da história quando estiverem prontos.
+// --- Enigma 1: O Cofre Matemático ------------------------------------------
+// O Perito vê os 4 frascos (CenaDosFrascos), o Criptógrafo vê as fórmulas
+// (ManualLaboratorio) e o Hacker combina os dois pra montar a senha do
+// cofre (TerminalHacker). A senha nunca é escrita literalmente — é sempre
+// calculada a partir de FRASCOS, pra formulário e frascos nunca saírem de
+// sincronia.
+export const FRASCOS = [
+  { color: "Vermelho", hex: "#ef4444", value: 4 },
+  { color: "Azul", hex: "#3b82f6", value: 7 },
+  { color: "Verde", hex: "#22c55e", value: 2 },
+  { color: "Amarelo", hex: "#eab308", value: 9 },
+] as const;
 
-export const CIPHER_ALPHABET: { symbol: string; letter: string }[] = [
-  { symbol: "▲", letter: "A" },
-  { symbol: "●", letter: "E" },
-  { symbol: "■", letter: "F" },
-  { symbol: "★", letter: "G" },
-  { symbol: "◆", letter: "O" },
-  { symbol: "✦", letter: "R" },
-  { symbol: "◐", letter: "T" },
-  { symbol: "✚", letter: "7" },
-];
+function valorDoFrasco(color: (typeof FRASCOS)[number]["color"]) {
+  return FRASCOS.find((f) => f.color === color)!.value;
+}
 
-// A frase que o Criptógrafo decifra (usando o dicionário acima) revela a
-// senha que o Hacker de Sistemas precisa digitar: "GRIFO7"
-export const CIPHER_MESSAGE = "★✦◆■◐✚";
-
-export const TERMINAL_PASSWORD = "GRIFO7";
+export const COFRE_PASSWORD = [
+  valorDoFrasco("Vermelho") + valorDoFrasco("Verde"),
+  valorDoFrasco("Amarelo") - valorDoFrasco("Azul"),
+  valorDoFrasco("Verde") * 2,
+  valorDoFrasco("Azul") - valorDoFrasco("Vermelho"),
+].join("");
 
 export const SUSPECTS = [
   {
