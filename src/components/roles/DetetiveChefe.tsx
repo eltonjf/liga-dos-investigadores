@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SUSPECTS } from "../../data/scenarios/cenario-trofeu";
 import { patchGameState } from "../../hooks/useGameState";
 import type { GameState } from "../../types";
+import { MapaTatico } from "../puzzles/MapaTatico";
 import { Panel } from "../ui/Panel";
 
 interface DetetiveChefeProps {
@@ -14,6 +15,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
   const [confirming, setConfirming] = useState(false);
 
   const accused = gameState?.accusation;
+  const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
 
   async function handleAccuse() {
     if (!selected) return;
@@ -24,26 +26,15 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Panel title="Mapa da Escola" accent="yellow">
-        <svg viewBox="0 0 320 180" className="w-full rounded-xl border border-slate-700 bg-slate-950">
-          <rect x="10" y="10" width="90" height="70" fill="#141a29" stroke="#22f2ff" />
-          <text x="55" y="50" textAnchor="middle" fontSize="9" fill="#22f2ff" fontFamily="monospace">
-            QUADRA
-          </text>
-          <rect x="115" y="10" width="90" height="70" fill="#141a29" stroke="#ffb020" />
-          <text x="160" y="50" textAnchor="middle" fontSize="9" fill="#ffb020" fontFamily="monospace">
-            TROFÉUS
-          </text>
-          <rect x="220" y="10" width="90" height="70" fill="#141a29" stroke="#ff2ee6" />
-          <text x="265" y="50" textAnchor="middle" fontSize="9" fill="#ff2ee6" fontFamily="monospace">
-            BIBLIOTECA
-          </text>
-          <rect x="10" y="95" width="300" height="70" fill="#141a29" stroke="#b6ff1f" />
-          <text x="160" y="135" textAnchor="middle" fontSize="9" fill="#b6ff1f" fontFamily="monospace">
-            PÁTIO CENTRAL
-          </text>
-        </svg>
-      </Panel>
+      {firewallDown ? (
+        <MapaTatico />
+      ) : (
+        <Panel accent="green">
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Derrube o Firewall (Fase 1) para liberar o mapa tático.
+          </p>
+        </Panel>
+      )}
 
       <Panel title="Formulário de Acusação Final" accent="yellow">
         {accused ? (

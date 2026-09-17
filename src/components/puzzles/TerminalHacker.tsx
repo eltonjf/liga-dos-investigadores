@@ -1,22 +1,23 @@
 import { useState } from "react";
-import { COFRE_PASSWORD } from "../../data/scenarios/cenario-trofeu";
-import { patchGameState } from "../../hooks/useGameState";
 import { Panel } from "../ui/Panel";
 
 interface TerminalHackerProps {
-  sessionId: string;
+  title: string;
+  code: string;
   solved: boolean;
+  onSolved: () => void;
+  hint: string;
 }
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "Limpar", "0", "⌫"];
 
-export function TerminalHacker({ sessionId, solved }: TerminalHackerProps) {
+export function TerminalHacker({ title, code, solved, onSolved, hint }: TerminalHackerProps) {
   const [digits, setDigits] = useState("");
   const [error, setError] = useState(false);
 
   if (solved) {
     return (
-      <Panel accent="green">
+      <Panel title={title} accent="green">
         <p className="text-center font-bold uppercase tracking-wide text-green-400">
           Sistema Desbloqueado
         </p>
@@ -24,7 +25,7 @@ export function TerminalHacker({ sessionId, solved }: TerminalHackerProps) {
     );
   }
 
-  async function handleKey(key: string) {
+  function handleKey(key: string) {
     if (error) return;
     if (key === "Limpar") {
       setDigits("");
@@ -34,13 +35,13 @@ export function TerminalHacker({ sessionId, solved }: TerminalHackerProps) {
       setDigits((d) => d.slice(0, -1));
       return;
     }
-    if (digits.length >= 4) return;
+    if (digits.length >= code.length) return;
 
     const next = digits + key;
     setDigits(next);
-    if (next.length === 4) {
-      if (next === COFRE_PASSWORD) {
-        await patchGameState(sessionId, { puzzle_1_solved: true });
+    if (next.length === code.length) {
+      if (next === code) {
+        onSolved();
       } else {
         setError(true);
         setTimeout(() => {
@@ -51,10 +52,10 @@ export function TerminalHacker({ sessionId, solved }: TerminalHackerProps) {
     }
   }
 
-  const display = digits.padEnd(4, "•").split("").join(" ");
+  const display = digits.padEnd(code.length, "•").split("").join(" ");
 
   return (
-    <Panel title="Terminal do Cofre" accent="green">
+    <Panel title={title} accent="green">
       <div
         className={`rounded-xl border-2 bg-black p-4 text-center font-mono text-3xl tracking-widest transition-colors ${
           error ? "animate-shake border-red-500 text-red-400" : "border-slate-700 text-green-400"
@@ -73,10 +74,7 @@ export function TerminalHacker({ sessionId, solved }: TerminalHackerProps) {
           </button>
         ))}
       </div>
-      <p className="mt-3 text-xs text-white/60">
-        Combine os números dos frascos com as fórmulas do Criptógrafo para descobrir a senha de 4
-        dígitos do cofre.
-      </p>
+      <p className="mt-3 text-xs text-white/60">{hint}</p>
     </Panel>
   );
 }

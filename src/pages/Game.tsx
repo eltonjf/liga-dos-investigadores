@@ -1,6 +1,7 @@
 import { Search, Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Briefing } from "../components/Briefing";
 import { AnalistaAudio } from "../components/roles/AnalistaAudio";
 import { Criptografo } from "../components/roles/Criptografo";
 import { DetetiveChefe } from "../components/roles/DetetiveChefe";
@@ -41,9 +42,22 @@ export function Game() {
     );
   }
 
+  const briefingAccepted = gameState?.briefing_accepted ?? [];
+  const briefingDone = players.length > 0 && players.every((p) => briefingAccepted.includes(p.uid));
+
+  if (!briefingDone) {
+    return (
+      <Briefing sessionId={sessionId} myUid={me.uid} players={players} accepted={briefingAccepted} />
+    );
+  }
+
+  const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
   const checkpointsDone =
-    Number(Boolean(gameState?.puzzle_1_solved)) + Number(Boolean(gameState?.accusation));
-  const progressPct = (checkpointsDone / 2) * 100;
+    Number(Boolean(gameState?.puzzle_1_solved)) +
+    Number(Boolean(gameState?.radio_code_solved)) +
+    Number(Boolean(gameState?.tracking_code_solved)) +
+    Number(Boolean(gameState?.accusation));
+  const progressPct = (checkpointsDone / 4) * 100;
 
   const myRoles = me.role_ids.map((id) => ROLES.find((r) => r.id === id)!);
   const currentRoleId =
@@ -93,7 +107,14 @@ export function Game() {
             <div className="mt-4 border-t border-slate-700 pt-3 text-xs text-white/50">
               <p>Pilha da lanterna: {gameState?.battery_tips ?? 100}%</p>
               <p className="mt-1">
-                Puzzle 1: {gameState?.puzzle_1_solved ? "resolvido ✓" : "pendente"}
+                Terminal 1 (cofre): {gameState?.puzzle_1_solved ? "resolvido ✓" : "pendente"}
+              </p>
+              <p className="mt-1">
+                Terminal 2 (rádio): {gameState?.radio_code_solved ? "resolvido ✓" : "pendente"}
+              </p>
+              <p className="mt-1">Firewall: {firewallDown ? "derrubado ✓" : "ativo"}</p>
+              <p className="mt-1">
+                Terminal 3 (rastreio): {gameState?.tracking_code_solved ? "resolvido ✓" : "pendente"}
               </p>
             </div>
           </Panel>
@@ -135,13 +156,13 @@ function RoleView({
     case "perito-imagens":
       return <PeritoImagens gameState={gameState} />;
     case "analista-audio":
-      return <AnalistaAudio />;
+      return <AnalistaAudio gameState={gameState} />;
     case "criptografo":
       return <Criptografo gameState={gameState} />;
     case "hacker-sistemas":
       return <HackerSistemas sessionId={sessionId} gameState={gameState} />;
     case "especialista-comportamento":
-      return <EspecialistaComportamento />;
+      return <EspecialistaComportamento gameState={gameState} />;
     case "detetive-chefe":
       return <DetetiveChefe sessionId={sessionId} gameState={gameState} />;
     default:

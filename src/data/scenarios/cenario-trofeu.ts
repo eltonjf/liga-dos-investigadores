@@ -137,6 +137,57 @@ export const SUSPECTS = [
   },
 ];
 
+// --- Fase 1, Trava B: Frequência de Rádio ----------------------------------
+// O Analista de Áudio ouve a transmissão (RadioInterceptador) e repassa o
+// codinome + dígitos pro time. O Especialista em Comportamento tem, no
+// dossiê da escola, a tabela que traduz o codinome grego em dígito. A senha
+// nunca é escrita literalmente — vem sempre de CODE_WORDS + RADIO_DIGITS.
+export const CODE_WORDS: Record<string, string> = {
+  Alpha: "1",
+  Beta: "2",
+  Gama: "3",
+  Delta: "4",
+};
+
+export const RADIO_DIGITS = "998";
+
+export const RADIO_TRANSMISSION = {
+  title: "Frequência Interceptada",
+  transcript: "Frequência de acesso: Alpha-Nove-Nove-Oito.",
+};
+
+export const SCHOOL_DOSSIER = {
+  title: "Dossiê da Escola",
+  note: "A diretoria usa codinomes gregos para representar dígitos em comunicações internas: ALPHA = 1, BETA = 2, GAMA = 3, DELTA = 4.",
+};
+
+export const RADIO_CODE = CODE_WORDS.Alpha + RADIO_DIGITS;
+
+// --- Fase 2: Rastreando o Caminho (O Mapa) ---------------------------------
+// O Especialista lê o bilhete (direção), o Detetive segue a rota no
+// <MapaTatico /> a partir do Laboratório e acha o destino (Cantina), o
+// Perito lê a foto da cena (estados físicos). O Hacker junta o nº da sala
+// com a resposta de ciências. O código nunca é escrito literalmente — vem
+// sempre do roomNumber da Cantina + PHYSICS_ANSWER.
+export const BILHETE_INTERCEPTADO = "Fugir 2 blocos para o Leste e virar ao Sul.";
+
+export const SCHOOL_ROOMS = [
+  { id: "laboratorio", label: "Laboratório", col: 0, row: 0 },
+  { id: "biblioteca", label: "Biblioteca", col: 3, row: 0 },
+  { id: "ginasio", label: "Ginásio", col: 0, row: 1 },
+  { id: "cantina", label: "Cantina (Sala 5)", col: 2, row: 1, roomNumber: 5 },
+  { id: "oficina", label: "Oficina", col: 3, row: 1 },
+] as const;
+
+export const MAP_START_ROOM_ID = "laboratorio";
+export const MAP_DESTINATION_ROOM_ID = "cantina";
+
+const CANTINA = SCHOOL_ROOMS.find((r) => r.id === MAP_DESTINATION_ROOM_ID)!;
+
+export const PHYSICS_ANSWER = 2; // gelo derretendo: sólido + líquido = 2 estados físicos
+
+export const TRACKING_CODE = `${CANTINA.roomNumber}${PHYSICS_ANSWER}`;
+
 export const AUDIO_CLUES = [
   {
     id: "a1",

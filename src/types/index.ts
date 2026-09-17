@@ -35,7 +35,10 @@ export interface Session {
 }
 
 export interface GameState {
+  briefing_accepted: string[];
   puzzle_1_solved: boolean;
+  radio_code_solved: boolean;
+  tracking_code_solved: boolean;
   battery_tips: number;
   accusation?: string | null;
 }
