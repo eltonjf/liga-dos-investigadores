@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { TERMINAL_PASSWORD } from "../../data/scenarios/cenario-trofeu";
+import { COFRE_PASSWORD, RADIO_CODE, TRACKING_CODE } from "../../data/scenarios/cenario-trofeu";
 import { patchGameState } from "../../hooks/useGameState";
-import type { GameState } from "../../types";
+import { TerminalHacker } from "../puzzles/TerminalHacker";
 import { Panel } from "../ui/Panel";
+import type { GameState } from "../../types";
 
 interface HackerSistemasProps {
   sessionId: string;
@@ -10,52 +10,39 @@ interface HackerSistemasProps {
 }
 
 export function HackerSistemas({ sessionId, gameState }: HackerSistemasProps) {
-  const [input, setInput] = useState("");
-  const [log, setLog] = useState<string[]>(["> Sistema de segurança da escola", "> Aguardando senha..."]);
-  const [submitting, setSubmitting] = useState(false);
-
-  const solved = gameState?.puzzle_1_solved ?? false;
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!input.trim() || submitting) return;
-    setSubmitting(true);
-    const attempt = input.trim().toUpperCase();
-    if (attempt === TERMINAL_PASSWORD) {
-      setLog((l) => [...l, `> ${attempt}`, "> ACESSO CONCEDIDO ✓"]);
-      await patchGameState(sessionId, { puzzle_1_solved: true });
-    } else {
-      setLog((l) => [...l, `> ${attempt}`, "> SENHA INCORRETA. Peça a pista ao Criptógrafo."]);
-    }
-    setInput("");
-    setSubmitting(false);
-  }
+  const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
 
   return (
-    <Panel title="Terminal de Acesso" accent="amber">
-      <div className="h-48 overflow-y-auto rounded-lg border border-ink-700 bg-black p-3 font-mono text-sm text-neon-lime">
-        {log.map((line, i) => (
-          <div key={i}>{line}</div>
-        ))}
-        {solved && <div className="mt-2 text-neon-cyan">Puzzle 1 desbloqueado para toda a equipe!</div>}
-      </div>
-
-      <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={solved}
-          placeholder="Digite a senha..."
-          className="w-full rounded-lg border-2 border-ink-700 bg-ink-950 px-3 py-2 font-mono uppercase text-white outline-none focus:border-neon-amber disabled:opacity-40"
+    <div className="flex flex-col gap-4">
+      <TerminalHacker
+        title="Terminal 1 — Cofre"
+        code={COFRE_PASSWORD}
+        solved={gameState?.puzzle_1_solved ?? false}
+        onSolved={() => patchGameState(sessionId, { puzzle_1_solved: true })}
+        hint="Combine os números dos frascos com as fórmulas do Criptógrafo para descobrir a senha de 4 dígitos do cofre."
+      />
+      <TerminalHacker
+        title="Terminal 2 — Frequência de Rádio"
+        code={RADIO_CODE}
+        solved={gameState?.radio_code_solved ?? false}
+        onSolved={() => patchGameState(sessionId, { radio_code_solved: true })}
+        hint='Peça ao Analista de Áudio o codinome da transmissão e ao Especialista o ano de fundação da escola que ele representa.'
+      />
+      {firewallDown ? (
+        <TerminalHacker
+          title="Terminal 3 — Código de Rastreio"
+          code={TRACKING_CODE}
+          solved={gameState?.tracking_code_solved ?? false}
+          onSolved={() => patchGameState(sessionId, { tracking_code_solved: true })}
+          hint="Junte o número da sala que o Detetive encontrou no mapa com a resposta de ciências do Perito."
         />
-        <button
-          type="submit"
-          disabled={solved || submitting}
-          className="rounded-lg border-2 border-neon-amber px-4 font-mono text-neon-amber hover:bg-neon-amber/10 disabled:opacity-40"
-        >
-          Enviar
-        </button>
-      </form>
-    </Panel>
+      ) : (
+        <Panel accent="green">
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Terminal 3 bloqueado até derrubar o Firewall.
+          </p>
+        </Panel>
+      )}
+    </div>
   );
 }

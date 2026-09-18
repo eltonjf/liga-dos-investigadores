@@ -1,17 +1,8 @@
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { SCENARIO_ID } from "../data/scenarios/cenario-trofeu";
 import { db } from "./firebase";
 import { initGameState } from "../hooks/useGameState";
-import type { RoleId } from "../types";
+import type { Player, RoleId } from "../types";
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -20,7 +11,7 @@ function randomCode(length = 4) {
   for (let i = 0; i < length; i++) {
     code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
   }
-  return code;
+  return `LIGA-${code}`;
 }
 
 export async function createSession(hostUid: string): Promise<string> {
@@ -29,26 +20,32 @@ export async function createSession(hostUid: string): Promise<string> {
     scenario_id: SCENARIO_ID,
     status: "lobby",
     host_id: hostUid,
+    player_count: 6,
     created_at: serverTimestamp(),
   });
   return sessionId;
 }
 
-export async function pickRole(
+export async function setPlayerCount(sessionId: string, count: number) {
+  await updateDoc(doc(db, "sessions", sessionId), { player_count: count });
+}
+
+export async function pickBadge(
   sessionId: string,
   uid: string,
   name: string,
-  roleId: RoleId,
+  roleIds: RoleId[],
 ) {
   const playersRef = collection(db, "sessions", sessionId, "players");
-  const taken = await getDocs(query(playersRef, where("role_id", "==", roleId)));
-  if (!taken.empty) {
+  const snap = await getDocs(playersRef);
+  const taken = new Set(snap.docs.flatMap((d) => (d.data() as Player).role_ids));
+  if (roleIds.some((id) => taken.has(id))) {
     throw new Error("Este crachá já foi escolhido por outro investigador.");
   }
   await setDoc(doc(playersRef, uid), {
     uid,
     name,
-    role_id: roleId,
+    role_ids: roleIds,
     joined_at: serverTimestamp(),
   });
 }

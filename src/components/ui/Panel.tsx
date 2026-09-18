@@ -1,10 +1,12 @@
 import type { PropsWithChildren } from "react";
 
 const ACCENTS = {
-  cyan: "text-neon-cyan",
-  magenta: "text-neon-magenta",
-  lime: "text-neon-lime",
-  amber: "text-neon-amber",
+  yellow: { border: "border-yellow-400", text: "text-yellow-400", shadow: "shadow-neon-yellow" },
+  cyan: { border: "border-cyan-400", text: "text-cyan-400", shadow: "shadow-neon-cyan" },
+  purple: { border: "border-purple-500", text: "text-purple-500", shadow: "shadow-neon-purple" },
+  orange: { border: "border-orange-400", text: "text-orange-400", shadow: "shadow-neon-orange" },
+  green: { border: "border-green-400", text: "text-green-400", shadow: "shadow-neon-green" },
+  red: { border: "border-red-400", text: "text-red-400", shadow: "shadow-neon-red" },
 } as const;
 
 interface PanelProps extends PropsWithChildren {
@@ -14,14 +16,13 @@ interface PanelProps extends PropsWithChildren {
 }
 
 export function Panel({ title, accent = "cyan", className = "", children }: PanelProps) {
+  const a = ACCENTS[accent];
   return (
     <section
-      className={`scanlines rounded-xl border border-ink-700 bg-ink-900/80 p-5 shadow-lg ${className}`}
+      className={`rounded-2xl border-2 bg-slate-900/90 p-5 shadow-lg ${a.border} ${a.shadow} ${className}`}
     >
       {title && (
-        <h2 className={`mb-3 font-mono text-sm font-bold uppercase tracking-widest text-glow ${ACCENTS[accent]}`}>
-          {title}
-        </h2>
+        <h2 className={`mb-3 text-sm font-bold uppercase tracking-wide ${a.text}`}>{title}</h2>
       )}
       {children}
     </section>
