@@ -2,15 +2,9 @@ import { Search, Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Briefing } from "../components/Briefing";
-import { AnalistaAudio } from "../components/roles/AnalistaAudio";
-import { Criptografo } from "../components/roles/Criptografo";
-import { DetetiveChefe } from "../components/roles/DetetiveChefe";
-import { EspecialistaComportamento } from "../components/roles/EspecialistaComportamento";
-import { HackerSistemas } from "../components/roles/HackerSistemas";
-import { PeritoImagens } from "../components/roles/PeritoImagens";
 import { Button } from "../components/ui/Button";
 import { Panel } from "../components/ui/Panel";
-import { BADGES_BY_PLAYER_COUNT, ROLES, SCENARIO_FALLBACK } from "../data/scenarios/cenario-trofeu";
+import { getScenario } from "../data/scenarios/registry";
 import { useAuthUser } from "../hooks/useAuthUser";
 import { useGameState } from "../hooks/useGameState";
 import { usePlayers } from "../hooks/usePlayers";
@@ -42,30 +36,39 @@ export function Game() {
     );
   }
 
+  const scenario = getScenario(session.scenario_id);
+
   const briefingAccepted = gameState?.briefing_accepted ?? [];
   const briefingDone = players.length > 0 && players.every((p) => briefingAccepted.includes(p.uid));
 
   if (!briefingDone) {
     return (
-      <Briefing sessionId={sessionId} myUid={me.uid} players={players} accepted={briefingAccepted} />
+      <Briefing
+        sessionId={sessionId}
+        myUid={me.uid}
+        players={players}
+        accepted={briefingAccepted}
+        title={scenario.briefing?.title}
+        body={scenario.briefing?.body}
+        highlight={scenario.briefing?.highlight}
+        missionLine={scenario.briefing?.missionLine}
+      />
     );
   }
 
-  const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
-  const checkpointsDone =
-    Number(Boolean(gameState?.puzzle_1_solved)) +
-    Number(Boolean(gameState?.radio_code_solved)) +
-    Number(Boolean(gameState?.tracking_code_solved)) +
-    Number(Boolean(gameState?.accusation));
-  const progressPct = (checkpointsDone / 4) * 100;
+  if (scenario.VictoryScreen && scenario.isComplete(gameState)) {
+    return <scenario.VictoryScreen players={players} />;
+  }
 
-  const myRoles = me.role_ids.map((id) => ROLES.find((r) => r.id === id)!);
+  const progressPct = scenario.progressPct(gameState);
+
+  const myRoles = me.role_ids.map((id) => scenario.ROLES.find((r) => r.id === id)!);
   const currentRoleId =
     activeRoleId && me.role_ids.includes(activeRoleId) ? activeRoleId : myRoles[0].id;
 
-  const badges = (BADGES_BY_PLAYER_COUNT[session.player_count ?? 6] ?? BADGES_BY_PLAYER_COUNT[6]).map(
-    (ids) => ids.map((id) => ROLES.find((r) => r.id === id)!),
-  );
+  const badges = (
+    scenario.BADGES_BY_PLAYER_COUNT[session.player_count ?? 6] ?? scenario.BADGES_BY_PLAYER_COUNT[6]
+  ).map((ids) => ids.map((id) => scenario.ROLES.find((r) => r.id === id)!));
 
   return (
     <main className="mx-auto flex min-h-svh max-w-6xl flex-col gap-6 px-4 py-8">
@@ -74,7 +77,7 @@ export function Game() {
           <Trophy className="text-yellow-400 text-glow" size={28} />
           <Search className="text-cyan-400 text-glow" size={28} />
           <h1 className="text-2xl font-extrabold uppercase tracking-wide text-cyan-300 text-glow">
-            {SCENARIO_FALLBACK.title}
+            {scenario.fallback.title}
           </h1>
         </div>
         <div className="h-3 w-full max-w-xl overflow-hidden rounded-full border border-slate-700 bg-slate-800">
@@ -104,19 +107,7 @@ export function Game() {
                 );
               })}
             </ul>
-            <div className="mt-4 border-t border-slate-700 pt-3 text-xs text-white/50">
-              <p>Pilha da lanterna: {gameState?.battery_tips ?? 100}%</p>
-              <p className="mt-1">
-                Terminal 1 (cofre): {gameState?.puzzle_1_solved ? "resolvido ✓" : "pendente"}
-              </p>
-              <p className="mt-1">
-                Terminal 2 (rádio): {gameState?.radio_code_solved ? "resolvido ✓" : "pendente"}
-              </p>
-              <p className="mt-1">Firewall: {firewallDown ? "derrubado ✓" : "ativo"}</p>
-              <p className="mt-1">
-                Terminal 3 (rastreio): {gameState?.tracking_code_solved ? "resolvido ✓" : "pendente"}
-              </p>
-            </div>
+            <scenario.StatusPanel gameState={gameState} />
           </Panel>
         </aside>
 
@@ -136,36 +127,9 @@ export function Game() {
               ))}
             </div>
           )}
-          <RoleView roleId={currentRoleId} sessionId={sessionId} gameState={gameState} />
+          <scenario.RoleView roleId={currentRoleId} sessionId={sessionId} gameState={gameState} />
         </section>
       </div>
     </main>
   );
-}
-
-function RoleView({
-  roleId,
-  sessionId,
-  gameState,
-}: {
-  roleId: string;
-  sessionId: string;
-  gameState: ReturnType<typeof useGameState>;
-}) {
-  switch (roleId) {
-    case "perito-imagens":
-      return <PeritoImagens gameState={gameState} />;
-    case "analista-audio":
-      return <AnalistaAudio gameState={gameState} />;
-    case "criptografo":
-      return <Criptografo gameState={gameState} />;
-    case "hacker-sistemas":
-      return <HackerSistemas sessionId={sessionId} gameState={gameState} />;
-    case "especialista-comportamento":
-      return <EspecialistaComportamento gameState={gameState} />;
-    case "detetive-chefe":
-      return <DetetiveChefe sessionId={sessionId} gameState={gameState} />;
-    default:
-      return null;
-  }
 }

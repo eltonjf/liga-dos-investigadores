@@ -1,5 +1,12 @@
 import { getApps, initializeApp } from "firebase/app";
-import { getAuth, signInAnonymously, type Auth, type User } from "firebase/auth";
+import {
+  browserSessionPersistence,
+  getAuth,
+  setPersistence,
+  signInAnonymously,
+  type Auth,
+  type User,
+} from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -32,19 +39,26 @@ if (firebaseConfigured) {
 export const auth = authInstance as Auth;
 export const db = dbInstance as Firestore;
 
+// Persistência em sessionStorage (por aba) em vez do padrão (IndexedDB,
+// compartilhado entre abas): sem isso, duas abas no mesmo navegador viram o
+// MESMO uid anônimo, e a segunda pessoa não consegue escolher um crachá
+// porque o app já acha que ela é o jogador 1.
 export function ensureAnonymousUser(): Promise<User> {
   if (!authInstance) return Promise.reject(new Error("Firebase não configurado."));
   const instance = authInstance;
-  return new Promise((resolve, reject) => {
-    const unsubscribe = instance.onAuthStateChanged((user) => {
-      unsubscribe();
-      if (user) {
-        resolve(user);
-        return;
-      }
-      signInAnonymously(instance)
-        .then((credential) => resolve(credential.user))
-        .catch(reject);
-    }, reject);
-  });
+  return setPersistence(instance, browserSessionPersistence).then(
+    () =>
+      new Promise((resolve, reject) => {
+        const unsubscribe = instance.onAuthStateChanged((user) => {
+          unsubscribe();
+          if (user) {
+            resolve(user);
+            return;
+          }
+          signInAnonymously(instance)
+            .then((credential) => resolve(credential.user))
+            .catch(reject);
+        }, reject);
+      }),
+  );
 }

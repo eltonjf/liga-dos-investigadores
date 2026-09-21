@@ -7,27 +7,51 @@ interface BriefingProps {
   myUid: string;
   players: Player[];
   accepted: string[];
+  title?: string;
+  body?: string;
+  highlight?: string;
+  missionLine?: string;
 }
 
-export function Briefing({ sessionId, myUid, players, accepted }: BriefingProps) {
+const DEFAULT_TITLE = "Transmissão da Diretoria";
+const DEFAULT_BODY =
+  "Agentes, o Troféu de Ciências foi roubado. Para pegarmos o culpado, vocês precisam trabalhar em equipe. NENHUM DE VOCÊS TEM A RESPOSTA COMPLETA. O Perito vê pistas que o Criptógrafo precisa traduzir. O Hacker só consegue agir se o Analista ouvir as frequências. Falem em voz alta o que estão vendo!";
+const DEFAULT_HIGHLIGHT = "NENHUM DE VOCÊS TEM A RESPOSTA COMPLETA.";
+const DEFAULT_MISSION_LINE = "Missão: Derrubem o Firewall e encontrem a gravação de segurança.";
+
+export function Briefing({
+  sessionId,
+  myUid,
+  players,
+  accepted,
+  title = DEFAULT_TITLE,
+  body = DEFAULT_BODY,
+  highlight = DEFAULT_HIGHLIGHT,
+  missionLine = DEFAULT_MISSION_LINE,
+}: BriefingProps) {
   const iAccepted = accepted.includes(myUid);
   const acceptedCount = players.filter((p) => accepted.includes(p.uid)).length;
+  const bodyParts = highlight && body.includes(highlight) ? body.split(highlight) : [body];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
       <div className="w-full max-w-lg rounded-2xl border-2 border-cyan-400 bg-slate-900 p-6 shadow-neon-cyan">
         <h2 className="text-center text-lg font-extrabold uppercase tracking-widest text-cyan-300 text-glow">
-          Transmissão da Diretoria
+          {title}
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-white/80">
-          Agentes, o Troféu de Ciências foi roubado. Para pegarmos o culpado, vocês precisam
-          trabalhar em equipe.{" "}
-          <strong className="text-yellow-400">NENHUM DE VOCÊS TEM A RESPOSTA COMPLETA.</strong> O
-          Perito vê pistas que o Criptógrafo precisa traduzir. O Hacker só consegue agir se o
-          Analista ouvir as frequências. Falem em voz alta o que estão vendo!
+          {bodyParts.length > 1 ? (
+            <>
+              {bodyParts[0]}
+              <strong className="text-yellow-400">{highlight}</strong>
+              {bodyParts[1]}
+            </>
+          ) : (
+            body
+          )}
         </p>
         <p className="mt-3 rounded-lg border border-green-400/40 bg-black/40 p-3 font-mono text-sm text-green-400">
-          Missão: Derrubem o Firewall e encontrem a gravação de segurança.
+          {missionLine}
         </p>
 
         {iAccepted ? (

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { RoleBadge } from "../components/ui/RoleBadge";
-import { BADGES_BY_PLAYER_COUNT, ROLES, SCENARIO_FALLBACK } from "../data/scenarios/cenario-trofeu";
+import { getScenario } from "../data/scenarios/registry";
 import { useAuthUser } from "../hooks/useAuthUser";
 import { usePlayers } from "../hooks/usePlayers";
 import { useSession } from "../hooks/useSession";
@@ -24,18 +24,19 @@ export function Lobby() {
   const [error, setError] = useState<string | null>(null);
   const [pendingBadge, setPendingBadge] = useState<RoleId[] | null>(null);
 
+  const scenario = getScenario(session?.scenario_id);
   const me = useMemo(() => players.find((p) => p.uid === user?.uid), [players, user]);
   const isHost = Boolean(user && session && session.host_id === user.uid);
   const playerCount = session?.player_count ?? 6;
   const badges = useMemo(
     () =>
-      (BADGES_BY_PLAYER_COUNT[playerCount] ?? BADGES_BY_PLAYER_COUNT[6]).map((ids) =>
-        ids.map((id) => ROLES.find((r) => r.id === id)!),
+      (scenario.BADGES_BY_PLAYER_COUNT[playerCount] ?? scenario.BADGES_BY_PLAYER_COUNT[6]).map((ids) =>
+        ids.map((id) => scenario.ROLES.find((r) => r.id === id)!),
       ),
-    [playerCount],
+    [playerCount, scenario],
   );
   const assignedRoleIds = useMemo(() => new Set(players.flatMap((p) => p.role_ids)), [players]);
-  const allRolesAssigned = ROLES.every((r) => assignedRoleIds.has(r.id));
+  const allRolesAssigned = scenario.ROLES.every((r) => assignedRoleIds.has(r.id));
 
   useEffect(() => {
     if (session?.status === "playing") {
@@ -125,9 +126,10 @@ export function Lobby() {
     <main className="mx-auto flex min-h-svh max-w-4xl flex-col gap-6 px-4 py-10">
       <header className="text-center">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400">Sala {sessionId}</p>
-        <h1 className="mt-2 text-2xl font-bold text-white">{SCENARIO_FALLBACK.title}</h1>
+        <h1 className="mt-2 text-2xl font-bold text-white">{scenario.fallback.title}</h1>
         <p className="mt-1 text-sm text-white/60">
-          Escolha seu crachá de investigador. {assignedRoleIds.size}/{ROLES.length} papéis distribuídos.
+          Escolha seu crachá de investigador. {assignedRoleIds.size}/{scenario.ROLES.length} papéis
+          distribuídos.
         </p>
       </header>
 
@@ -200,7 +202,8 @@ export function Lobby() {
           </Button>
           {!allRolesAssigned && (
             <p className="text-xs text-white/50">
-              Faltam {ROLES.length - assignedRoleIds.size} papéis para distribuir antes de começar.
+              Faltam {scenario.ROLES.length - assignedRoleIds.size} papéis para distribuir antes de
+              começar.
             </p>
           )}
         </div>

@@ -1,5 +1,5 @@
 import { collection, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { SCENARIO_ID } from "../data/scenarios/cenario-trofeu";
+import { DEFAULT_SCENARIO_ID } from "../data/scenarios/registry";
 import { db } from "./firebase";
 import { initGameState } from "../hooks/useGameState";
 import type { Player, RoleId } from "../types";
@@ -14,10 +14,13 @@ function randomCode(length = 4) {
   return `LIGA-${code}`;
 }
 
-export async function createSession(hostUid: string): Promise<string> {
+export async function createSession(
+  hostUid: string,
+  scenarioId: string = DEFAULT_SCENARIO_ID,
+): Promise<string> {
   const sessionId = randomCode();
   await setDoc(doc(db, "sessions", sessionId), {
-    scenario_id: SCENARIO_ID,
+    scenario_id: scenarioId,
     status: "lobby",
     host_id: hostUid,
     player_count: 6,

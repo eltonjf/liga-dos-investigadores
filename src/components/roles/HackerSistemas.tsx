@@ -1,4 +1,10 @@
-import { COFRE_PASSWORD, RADIO_CODE, TRACKING_CODE } from "../../data/scenarios/cenario-trofeu";
+import {
+  COFRE_PASSWORD,
+  FINAL_PASSWORD,
+  FINAL_TERMINAL_HINT,
+  RADIO_CODE,
+  TRACKING_CODE,
+} from "../../data/scenarios/cenario-trofeu";
 import { patchGameState } from "../../hooks/useGameState";
 import { TerminalHacker } from "../puzzles/TerminalHacker";
 import { Panel } from "../ui/Panel";
@@ -40,6 +46,22 @@ export function HackerSistemas({ sessionId, gameState }: HackerSistemasProps) {
         <Panel accent="green">
           <p className="text-center text-xs uppercase tracking-wide text-white/40">
             Terminal 3 bloqueado até derrubar o Firewall.
+          </p>
+        </Panel>
+      )}
+      {gameState?.tracking_code_solved ? (
+        <TerminalHacker
+          title="Terminal 4 — Sistema Final"
+          code={FINAL_PASSWORD}
+          solved={gameState?.final_terminal_solved ?? false}
+          onSolved={() => patchGameState(sessionId, { final_terminal_solved: true })}
+          hint={FINAL_TERMINAL_HINT}
+          mode="text"
+        />
+      ) : (
+        <Panel accent="green">
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Terminal 4 bloqueado até encontrar o código de rastreio.
           </p>
         </Panel>
       )}

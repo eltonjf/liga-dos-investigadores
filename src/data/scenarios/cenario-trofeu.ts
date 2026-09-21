@@ -122,18 +122,21 @@ export const SUSPECTS = [
     name: "Professor Renato",
     role: "Professor de Educação Física",
     alibi: "Disse que estava na quadra o tempo todo, mas ninguém o viu depois das 14h.",
+    lastSeenNear: "Ginásio",
   },
   {
     id: "s2",
     name: "Bibliotecária Vera",
     role: "Responsável pela biblioteca",
     alibi: "Afirma ter organizado livros na sala de troféus até mais tarde que o normal.",
+    lastSeenNear: "Biblioteca",
   },
   {
     id: "s3",
     name: "Zelador Toninho",
     role: "Zelador da escola",
     alibi: "Tem as chaves de todas as salas, inclusive da sala de troféus.",
+    lastSeenNear: "Oficina",
   },
 ];
 
@@ -195,3 +198,18 @@ export const AUDIO_CLUES = [
     description: "Passos apressados seguidos de um barulho metálico.",
   },
 ];
+
+// --- Fase 3: A Prova Final e a Acusação ------------------------------------
+// Hacker e Criptógrafo deduzem a senha do terminal final a partir da dica na
+// tela do Hacker. Ao liberar o sistema, o Analista de Áudio ganha acesso à
+// gravação recuperada, que aponta um cômodo. O Detetive cruza esse cômodo
+// com a ficha do Especialista (lastSeenNear) para decidir a acusação.
+export const FINAL_TERMINAL_HINT = "Objeto amarelo de cortar papel, em cima da mesa.";
+export const FINAL_PASSWORD = "TESOURA AMARELA";
+
+export const FINAL_AUDIO_CLUE = {
+  id: "a2",
+  title: "Arquivo_Recuperado_01.mp3",
+  description:
+    "Som de motor ligado, faíscas de solda elétrica e um cachorro latindo ao fundo — parece perto da Oficina.",
+};

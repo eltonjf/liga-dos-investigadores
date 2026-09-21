@@ -8,6 +8,7 @@ const INITIAL_STATE: GameState = {
   puzzle_1_solved: false,
   radio_code_solved: false,
   tracking_code_solved: false,
+  final_terminal_solved: false,
   battery_tips: 100,
 };
 

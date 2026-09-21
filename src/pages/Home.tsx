@@ -5,12 +5,13 @@ import { Button } from "../components/ui/Button";
 import { Panel } from "../components/ui/Panel";
 import { useAuthUser } from "../hooks/useAuthUser";
 import { createSession } from "../lib/sessions";
-import { SCENARIO_FALLBACK } from "../data/scenarios/cenario-trofeu";
+import { DEFAULT_SCENARIO_ID, SCENARIO_LIST } from "../data/scenarios/registry";
 
 export function Home() {
   const user = useAuthUser();
   const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState("");
+  const [scenarioId, setScenarioId] = useState(DEFAULT_SCENARIO_ID);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,7 @@ export function Home() {
     setCreating(true);
     setError(null);
     try {
-      const sessionId = await createSession(user.uid);
+      const sessionId = await createSession(user.uid, scenarioId);
       navigate(`/lobby/${sessionId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível criar a sala.");
@@ -64,21 +65,41 @@ export function Home() {
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400">
           Liga dos Investigadores
         </p>
-        <h2 className="mt-2 text-3xl font-bold text-white">{SCENARIO_FALLBACK.title}</h2>
-        <p className="mt-1 text-sm text-white/60">
-          Tempo limite: {SCENARIO_FALLBACK.timeLimit} minutos · 6 investigadores
-        </p>
       </div>
 
       <Panel title="Criar nova sala" accent="cyan" className="w-full">
-        <p className="mb-4 text-sm text-white/70">
-          Você vira o anfitrião e recebe um código para compartilhar com a equipe.
-        </p>
+        <p className="mb-3 text-sm text-white/70">Escolha o caso e vire o anfitrião da missão.</p>
+        <div className="flex flex-col gap-2">
+          {SCENARIO_LIST.map((scenario) => (
+            <label
+              key={scenario.id}
+              className={`flex cursor-pointer flex-col gap-1 rounded-xl border-2 p-3 transition ${
+                scenarioId === scenario.id
+                  ? "border-cyan-400 bg-cyan-400/10 shadow-neon-cyan"
+                  : "border-slate-700"
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="scenario"
+                  checked={scenarioId === scenario.id}
+                  onChange={() => setScenarioId(scenario.id)}
+                  className="accent-cyan-400"
+                />
+                <span className="font-bold text-white">{scenario.fallback.title}</span>
+              </span>
+              <span className="pl-6 text-xs text-white/50">
+                Tempo limite: {scenario.fallback.timeLimit} minutos · 6 investigadores
+              </span>
+            </label>
+          ))}
+        </div>
         <Button
           variant="primary"
           onClick={handleCreate}
           disabled={creating}
-          className="flex w-full items-center justify-center gap-2"
+          className="mt-4 flex w-full items-center justify-center gap-2"
         >
           <Plus size={18} />
           {creating ? "Criando..." : "Criar missão"}

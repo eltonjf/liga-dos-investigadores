@@ -40,6 +40,10 @@ export function EspecialistaComportamento({ gameState }: EspecialistaComportamen
                 <span className="text-white/40">Álibi: </span>
                 {s.alibi}
               </p>
+              <p className="mt-1 text-sm text-white/70">
+                <span className="text-white/40">Visto por último perto de: </span>
+                {s.lastSeenNear}
+              </p>
             </div>
           ))}
         </div>

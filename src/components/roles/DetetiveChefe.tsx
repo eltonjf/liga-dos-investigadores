@@ -16,6 +16,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
 
   const accused = gameState?.accusation;
   const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
+  const finalTerminalSolved = Boolean(gameState?.final_terminal_solved);
 
   async function handleAccuse() {
     if (!selected) return;
@@ -37,7 +38,11 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
       )}
 
       <Panel title="Formulário de Acusação Final" accent="yellow">
-        {accused ? (
+        {!finalTerminalSolved ? (
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Aguarde o Hacker liberar o sistema final e o Analista de Áudio ouvir a gravação recuperada.
+          </p>
+        ) : accused ? (
           <p className="text-center font-mono text-yellow-400">
             Acusação registrada: {SUSPECTS.find((s) => s.id === accused)?.name}
           </p>
