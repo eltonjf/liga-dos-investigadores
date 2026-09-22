@@ -1,8 +1,8 @@
-import { collection, doc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { DEFAULT_SCENARIO_ID } from "../data/scenarios/registry";
 import { db } from "./firebase";
 import { initGameState } from "../hooks/useGameState";
-import type { Player, RoleId } from "../types";
+import type { RoleId } from "../types";
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -39,17 +39,21 @@ export async function pickBadge(
   name: string,
   roleIds: RoleId[],
 ) {
-  const playersRef = collection(db, "sessions", sessionId, "players");
-  const snap = await getDocs(playersRef);
-  const taken = new Set(snap.docs.flatMap((d) => (d.data() as Player).role_ids));
-  if (roleIds.some((id) => taken.has(id))) {
-    throw new Error("Este crachá já foi escolhido por outro investigador.");
-  }
-  await setDoc(doc(playersRef, uid), {
-    uid,
-    name,
-    role_ids: roleIds,
-    joined_at: serverTimestamp(),
+  // Um doc por papel em badges/: a transação + regra create-only garantem que
+  // dois jogadores clicando ao mesmo tempo não levam o mesmo crachá.
+  const badgeRefs = roleIds.map((id) => doc(db, "sessions", sessionId, "badges", id));
+  await runTransaction(db, async (tx) => {
+    const snaps = await Promise.all(badgeRefs.map((ref) => tx.get(ref)));
+    if (snaps.some((s) => s.exists())) {
+      throw new Error("Este crachá já foi escolhido por outro investigador.");
+    }
+    badgeRefs.forEach((ref) => tx.set(ref, { uid }));
+    tx.set(doc(db, "sessions", sessionId, "players", uid), {
+      uid,
+      name,
+      role_ids: roleIds,
+      joined_at: serverTimestamp(),
+    });
   });
 }
 
