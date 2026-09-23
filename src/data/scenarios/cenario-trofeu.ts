@@ -210,6 +210,6 @@ export const FINAL_PASSWORD = "TESOURA AMARELA";
 export const FINAL_AUDIO_CLUE = {
   id: "a2",
   title: "Arquivo_Recuperado_01.mp3",
-  description:
-    "Som de motor ligado, faíscas de solda elétrica e um cachorro latindo ao fundo — parece perto da Oficina.",
+  description: "Gravação recuperada do sistema. Ouça com atenção os sons ao fundo.",
+  src: "/audio/gravacao_final.mp3",
 };

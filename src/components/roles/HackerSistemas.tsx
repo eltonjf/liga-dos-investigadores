@@ -32,7 +32,7 @@ export function HackerSistemas({ sessionId, gameState }: HackerSistemasProps) {
         code={RADIO_CODE}
         solved={gameState?.radio_code_solved ?? false}
         onSolved={() => patchGameState(sessionId, { radio_code_solved: true })}
-        hint='Peça ao Analista de Áudio o codinome da transmissão e ao Especialista o ano de fundação da escola que ele representa.'
+        hint="Peça ao Analista de Áudio a transmissão e ao Especialista o dígito que cada codinome representa."
       />
       {firewallDown ? (
         <TerminalHacker

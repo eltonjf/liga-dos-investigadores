@@ -28,7 +28,7 @@ export function FotoCantina({ locked, solved }: FotoCantinaProps) {
   }
 
   return (
-    <Panel title="Foto da Cena — Cantina (Sala 5)" accent="cyan">
+    <Panel title="Foto da Cena" accent="cyan">
       <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-700 bg-slate-950 p-6">
         <Droplets size={48} className="text-cyan-300" />
         <p className="text-center text-sm text-white/70">
@@ -36,7 +36,7 @@ export function FotoCantina({ locked, solved }: FotoCantinaProps) {
         </p>
       </div>
       <p className="mt-3 text-xs text-white/60">
-        Ciências: quantos estados físicos da água aparecem nessa cena (sólido e líquido)?
+        Ciências: quantos estados físicos da água aparecem nessa cena?
       </p>
     </Panel>
   );

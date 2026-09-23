@@ -75,7 +75,7 @@ export function TerminalDuplo({ title, symbolsCode, portCode, solved, onSolved }
             value={portOk ? portCode : portInput}
             onChange={(e) => setPortInput(e.target.value.replace(/\D/g, ""))}
             disabled={portOk}
-            placeholder="Digite a porta"
+            placeholder="Um dígito por grupo de batidas"
             className={`mt-1 w-full rounded-xl border-2 bg-black p-3 text-center font-mono text-lg tracking-widest transition-colors ${
               portOk
                 ? "border-green-500 text-green-400"

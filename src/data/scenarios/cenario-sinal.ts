@@ -117,19 +117,20 @@ export const SYMBOLS = [
 
 export const SYMBOLS_CODE = SYMBOLS.map((s) => s.value).join("");
 
+// ponytail: o ritmo está gravado em public/audio/transmissao_batidas.mp3;
+// mudou o padrão, regrave o áudio.
 export const BEAT_PATTERN = [3, 1, 4];
 export const PORT_CODE = BEAT_PATTERN.join("");
 
 export const AUDIO_CLUE_1 = {
   id: "audio-1",
-  title: "audio_1.mp3 — Transmissão Interceptada",
-  description: "Batidas rítmicas: 3 batidas, pausa, 1 batida, pausa, 4 batidas.",
-  src: "/audio/audio_1.mp3",
+  title: "Transmissão Interceptada",
+  src: "/audio/transmissao_batidas.mp3",
 };
 
 export const NETWORK_MANUAL = {
   title: "Manual de Portas de Rede",
-  note: "O número de batidas registradas na transmissão corresponde, em ordem, aos dígitos da Porta de Acesso do Servidor.",
+  note: "Cada grupo de batidas da transmissão vira UM dígito da Porta de Acesso: conte as batidas de cada grupo (os grupos são separados por pausas) e escreva os números na ordem, lado a lado. Exemplo: 2 batidas, pausa, 5 batidas → Porta 25.",
 };
 
 // --- Fase 2: Rastreio Geográfico (Plano Cartesiano) ------------------------
@@ -153,7 +154,7 @@ export const SUSPECT_ROOM_COORD = `${BIBLIOTECA.col}${GINASIO.row}`;
 
 export const TRACKING_MESSAGE = {
   title: "Mensagem Apagada (Recuperada)",
-  transcript: `Encontre o suspeito na interseção da coluna da Biblioteca (Coluna ${BIBLIOTECA.col}) com a linha do Ginásio de Esportes (Linha ${GINASIO.row}).`,
+  transcript: "Encontre o suspeito na interseção da coluna da Biblioteca com a linha do Ginásio de Esportes.",
 };
 
 export const MAP_IMAGE_SRC = "/assets/mapa.jpg";
@@ -174,7 +175,7 @@ export const OVERRIDE_CODE = String(BOILING_POINT_C * WATER_STATES_VISIBLE);
 
 export const THERMO_NOTE = {
   title: "Nota Técnica",
-  note: "A senha final de emergência é a temperatura de ebulição da água ao nível do mar (em °C), multiplicada pelo número de estados físicos da água visíveis na cena (sólido e gasoso).",
+  note: "A senha final de emergência é a temperatura de ebulição da água ao nível do mar (em °C), multiplicada pelo número de estados físicos da água visíveis na cena.",
 };
 
 // --- Fase 4: O Álibi Quebrado -----------------------------------------------
@@ -197,7 +198,7 @@ export const SUSPECTS = [
 ] as const;
 
 export const REX_NOTE =
-  "A casinha do cachorro Rex fica colada na Oficina de Projetos, sala de domínio do Prof. Roberto Silva.";
+  "A casinha do cachorro Rex fica colada na Oficina de Projetos.";
 
 export const LOCATIONS = ["Sala dos Professores", "Ginásio", "Oficina de Projetos"] as const;
 
@@ -205,9 +206,8 @@ export const AUDIO_EVIDENCE_OPTIONS = ["Som de Solda", "Motor Ligado", "Latido d
 
 export const FINAL_AUDIO_CLUE = {
   id: "audio-final",
-  title: "audio_final.mp3 — Gravação Recuperada",
-  description: "Som de solda elétrica, motor ligado e um cachorro latindo ao fundo.",
-  src: "/audio/audio_final.mp3",
+  title: "Gravação Recuperada",
+  src: "/audio/gravacao_final.mp3",
 };
 
 export const CORRECT_ACCUSATION = {

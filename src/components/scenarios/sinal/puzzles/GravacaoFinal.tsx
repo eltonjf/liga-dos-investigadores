@@ -5,7 +5,6 @@ import { Panel } from "../../../ui/Panel";
 export function GravacaoFinal() {
   const [playing, setPlaying] = useState(false);
   const barsRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (!playing) return;
@@ -32,10 +31,7 @@ export function GravacaoFinal() {
           ))}
         </div>
 
-        {/* ponytail: public/audio/audio_final.mp3 ainda não existe; troque pelo
-            arquivo real (solda + motor + cachorro latindo) quando gravado. */}
         <audio
-          ref={audioRef}
           src={FINAL_AUDIO_CLUE.src}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
@@ -44,12 +40,9 @@ export function GravacaoFinal() {
           controls
         />
 
-        <p className="mt-4 rounded-lg border border-purple-500/40 bg-black/40 p-3 font-mono text-sm text-purple-300">
-          {FINAL_AUDIO_CLUE.description}
-        </p>
         <p className="mt-2 text-xs text-white/60">
-          Cruze esses sons com os dossiês do Especialista em Comportamento para ajudar o Detetive a
-          decidir a acusação.
+          Descreva em voz alta os sons que ouvir e cruze-os com os dossiês do Especialista em
+          Comportamento para ajudar o Detetive a decidir a acusação.
         </p>
       </div>
     </Panel>
