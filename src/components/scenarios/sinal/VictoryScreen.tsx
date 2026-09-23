@@ -1,5 +1,7 @@
 import { Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { CERTIFICATE_TEXT } from "../../../data/scenarios/cenario-sinal";
+import { Button } from "../../ui/Button";
 import type { Player } from "../../../types";
 
 interface VictoryScreenProps {
@@ -7,6 +9,7 @@ interface VictoryScreenProps {
 }
 
 export function VictoryScreen({ players }: VictoryScreenProps) {
+  const navigate = useNavigate();
   return (
     <main className="flex min-h-svh items-center justify-center px-4 py-10">
       <div className="w-full max-w-lg rounded-2xl border-2 border-yellow-400 bg-slate-900 p-8 text-center shadow-neon-yellow">
@@ -26,6 +29,10 @@ export function VictoryScreen({ players }: VictoryScreenProps) {
             ))}
           </ul>
         </div>
+
+        <Button variant="yellow" onClick={() => navigate("/")} className="mt-6">
+          Nova Investigação
+        </Button>
       </div>
     </main>
   );
