@@ -1,9 +1,16 @@
-import { doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../lib/firebase";
 import type { GameState } from "../types";
 
-const INITIAL_STATE: GameState = { puzzle_1_solved: false, battery_tips: 100 };
+const INITIAL_STATE: GameState = {
+  briefing_accepted: [],
+  puzzle_1_solved: false,
+  radio_code_solved: false,
+  tracking_code_solved: false,
+  final_terminal_solved: false,
+  battery_tips: 100,
+};
 
 function stateRef(sessionId: string) {
   return doc(db, "sessions", sessionId, "game_state", "progress");
@@ -31,4 +38,8 @@ export async function initGameState(sessionId: string) {
 
 export async function patchGameState(sessionId: string, patch: Partial<GameState>) {
   await updateDoc(stateRef(sessionId), patch);
+}
+
+export async function acceptBriefing(sessionId: string, uid: string) {
+  await updateDoc(stateRef(sessionId), { briefing_accepted: arrayUnion(uid) });
 }

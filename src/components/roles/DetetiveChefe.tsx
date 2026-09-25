@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SUSPECTS } from "../../data/scenarios/cenario-trofeu";
 import { patchGameState } from "../../hooks/useGameState";
 import type { GameState } from "../../types";
+import { MapaTatico } from "../puzzles/MapaTatico";
 import { Panel } from "../ui/Panel";
 
 interface DetetiveChefeProps {
@@ -14,6 +15,8 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
   const [confirming, setConfirming] = useState(false);
 
   const accused = gameState?.accusation;
+  const firewallDown = Boolean(gameState?.puzzle_1_solved) && Boolean(gameState?.radio_code_solved);
+  const finalTerminalSolved = Boolean(gameState?.final_terminal_solved);
 
   async function handleAccuse() {
     if (!selected) return;
@@ -24,30 +27,23 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Panel title="Mapa da Escola" accent="cyan">
-        <svg viewBox="0 0 320 180" className="w-full rounded-lg border border-ink-700 bg-ink-950">
-          <rect x="10" y="10" width="90" height="70" fill="#141a29" stroke="#22f2ff" />
-          <text x="55" y="50" textAnchor="middle" fontSize="9" fill="#22f2ff" fontFamily="monospace">
-            QUADRA
-          </text>
-          <rect x="115" y="10" width="90" height="70" fill="#141a29" stroke="#ffb020" />
-          <text x="160" y="50" textAnchor="middle" fontSize="9" fill="#ffb020" fontFamily="monospace">
-            TROFÉUS
-          </text>
-          <rect x="220" y="10" width="90" height="70" fill="#141a29" stroke="#ff2ee6" />
-          <text x="265" y="50" textAnchor="middle" fontSize="9" fill="#ff2ee6" fontFamily="monospace">
-            BIBLIOTECA
-          </text>
-          <rect x="10" y="95" width="300" height="70" fill="#141a29" stroke="#b6ff1f" />
-          <text x="160" y="135" textAnchor="middle" fontSize="9" fill="#b6ff1f" fontFamily="monospace">
-            PÁTIO CENTRAL
-          </text>
-        </svg>
-      </Panel>
+      {firewallDown ? (
+        <MapaTatico />
+      ) : (
+        <Panel accent="green">
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Derrube o Firewall (Fase 1) para liberar o mapa tático.
+          </p>
+        </Panel>
+      )}
 
-      <Panel title="Formulário de Acusação Final" accent="lime">
-        {accused ? (
-          <p className="text-center font-mono text-neon-lime">
+      <Panel title="Formulário de Acusação Final" accent="yellow">
+        {!finalTerminalSolved ? (
+          <p className="text-center text-xs uppercase tracking-wide text-white/40">
+            Aguarde o Hacker liberar o sistema final e o Analista de Áudio ouvir a gravação recuperada.
+          </p>
+        ) : accused ? (
+          <p className="text-center font-mono text-yellow-400">
             Acusação registrada: {SUSPECTS.find((s) => s.id === accused)?.name}
           </p>
         ) : (
@@ -56,8 +52,8 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
               {SUSPECTS.map((s) => (
                 <label
                   key={s.id}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 transition ${
-                    selected === s.id ? "border-neon-lime bg-neon-lime/10" : "border-ink-700"
+                  className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition ${
+                    selected === s.id ? "border-yellow-400 bg-yellow-400/10 shadow-neon-yellow" : "border-slate-700"
                   }`}
                 >
                   <input
@@ -65,7 +61,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
                     name="suspect"
                     checked={selected === s.id}
                     onChange={() => setSelected(s.id)}
-                    className="accent-lime-400"
+                    className="accent-yellow-400"
                   />
                   <span className="font-mono text-white">{s.name}</span>
                 </label>
@@ -74,7 +70,7 @@ export function DetetiveChefe({ sessionId, gameState }: DetetiveChefeProps) {
             <button
               onClick={handleAccuse}
               disabled={!selected || confirming}
-              className="mt-4 w-full rounded-lg border-2 border-neon-lime py-2 font-mono uppercase tracking-wide text-neon-lime hover:bg-neon-lime/10 disabled:opacity-40"
+              className="mt-4 w-full rounded-xl border-2 border-yellow-400 py-2 font-mono uppercase tracking-wide text-yellow-400 shadow-neon-yellow hover:bg-yellow-400/10 disabled:opacity-40"
             >
               Confirmar acusação
             </button>

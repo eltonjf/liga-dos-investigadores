@@ -4,14 +4,12 @@
   --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
   --font-display: "Segoe UI", system-ui, sans-serif;
 
-  --color-neon-cyan: #22f2ff;
-  --color-neon-magenta: #ff2ee6;
-  --color-neon-lime: #b6ff1f;
-  --color-neon-amber: #ffb020;
-  --color-ink-950: #05060a;
-  --color-ink-900: #0a0d16;
-  --color-ink-800: #10141f;
-  --color-ink-700: #1a2030;
+  --shadow-neon-yellow: 0 0 10px rgba(250, 204, 21, 0.6), inset 0 0 5px rgba(250, 204, 21, 0.3);
+  --shadow-neon-cyan: 0 0 10px rgba(34, 211, 238, 0.6), inset 0 0 5px rgba(34, 211, 238, 0.3);
+  --shadow-neon-purple: 0 0 10px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.3);
+  --shadow-neon-orange: 0 0 10px rgba(251, 146, 60, 0.6), inset 0 0 5px rgba(251, 146, 60, 0.3);
+  --shadow-neon-green: 0 0 10px rgba(74, 222, 128, 0.6), inset 0 0 5px rgba(74, 222, 128, 0.3);
+  --shadow-neon-red: 0 0 10px rgba(248, 113, 113, 0.6), inset 0 0 5px rgba(248, 113, 113, 0.3);
 }
 
 html {
@@ -19,10 +17,12 @@ html {
 }
 
 body {
-  background: var(--color-ink-950);
+  background-color: #060b18;
   background-image:
-    radial-gradient(circle at 20% 0%, rgba(34, 242, 255, 0.08), transparent 40%),
-    radial-gradient(circle at 80% 20%, rgba(255, 46, 230, 0.08), transparent 40%);
+    radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.12), transparent 45%),
+    radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+  background-size: auto, auto, 26px 26px;
   color: #e6f6ff;
   font-family: var(--font-display);
   min-height: 100svh;
@@ -36,21 +36,26 @@ body {
   text-shadow: 0 0 12px currentColor;
 }
 
-.scanlines {
-  position: relative;
-  overflow: hidden;
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-8px);
+  }
+  40%,
+  60% {
+    transform: translateX(8px);
+  }
 }
 
-.scanlines::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.03) 0px,
-    rgba(255, 255, 255, 0.03) 1px,
-    transparent 2px,
-    transparent 4px
-  );
+.animate-shake {
+  animation: shake 0.5s;
 }

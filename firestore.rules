@@ -12,13 +12,23 @@ service cloud.firestore {
 
       match /players/{playerId} {
         allow read: if true;
-        allow create: if isAuthenticated() && request.auth.uid == playerId && !exists(/databases/$(database)/documents/sessions/$(sessionId)/players/$(request.resource.data.role_id));
+        allow create: if isAuthenticated() && request.auth.uid == playerId;
         allow update, delete: if isAuthenticated() && request.auth.uid == playerId;
       }
 
+      // Doc só pode ser criado (nunca sobrescrito): trava o papel para um jogador.
+      match /badges/{roleId} {
+        allow read: if true;
+        allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid;
+      }
+
+      // Só o host ou jogadores da própria sessão mexem no progresso.
       match /game_state/{stateId} {
-        allow read, update: if isAuthenticated();
-        allow create: if isAuthenticated();
+        allow read: if isAuthenticated();
+        allow create, update: if isAuthenticated() && (
+          exists(/databases/$(database)/documents/sessions/$(sessionId)/players/$(request.auth.uid))
+          || get(/databases/$(database)/documents/sessions/$(sessionId)).data.host_id == request.auth.uid
+        );
       }
     }
 

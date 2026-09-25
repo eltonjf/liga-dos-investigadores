@@ -6,7 +6,7 @@ export type RoleId =
   | "especialista-comportamento"
   | "detetive-chefe";
 
-export type AccentColor = "cyan" | "magenta" | "lime" | "amber";
+export type AccentColor = "yellow" | "cyan" | "purple" | "orange" | "green" | "red";
 
 export interface RoleDef {
   id: RoleId;
@@ -19,7 +19,7 @@ export interface RoleDef {
 export interface Player {
   uid: string;
   name: string;
-  role_id: RoleId;
+  role_ids: RoleId[];
   joined_at?: unknown;
 }
 
@@ -30,13 +30,25 @@ export interface Session {
   scenario_id: string;
   status: SessionStatus;
   host_id: string;
+  player_count?: number;
   created_at?: unknown;
 }
 
 export interface GameState {
+  briefing_accepted: string[];
   puzzle_1_solved: boolean;
+  radio_code_solved: boolean;
+  tracking_code_solved: boolean;
+  final_terminal_solved: boolean;
   battery_tips: number;
   accusation?: string | null;
+  // cenario-sinal
+  symbols_port_solved?: boolean;
+  geo_tracking_solved?: boolean;
+  override_solved?: boolean;
+  accusation_suspect?: string | null;
+  accusation_location?: string | null;
+  accusation_evidence?: string | null;
 }
 
 export interface Scenario {
